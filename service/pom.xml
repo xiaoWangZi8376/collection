@@ -17,6 +17,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+
     <dependencies>
         <!--依赖summer-dao-->
         <dependency>
@@ -36,7 +38,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>summer-service</finalName>
+        <finalName>service</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

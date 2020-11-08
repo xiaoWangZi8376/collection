@@ -11,6 +11,8 @@ public class User {
     private String status;
 
     private String username;
+    private String admin;
+    private String email;
 
     public Integer getId() {
         return id;
@@ -50,5 +52,21 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username == null ? null : username.trim();
+    }
+
+    public String getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(String admin) {
+        this.admin = admin;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

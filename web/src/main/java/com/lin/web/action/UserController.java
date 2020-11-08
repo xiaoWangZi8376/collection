@@ -1,29 +1,31 @@
 package com.lin.web.action;
 
+import com.alibaba.fastjson.JSON;
 import com.lin.common.entity.User;
 import com.lin.common.vo.ResultVO;
 import com.lin.service.service.UserService;
 import com.lin.web.enums.StatusCodeEnum;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/lin")
 public class UserController {
 
     @Resource(name = "userServiceImpl")
     private UserService userService;
 
-    @GetMapping("/user")
+    @RequestMapping("/user")
     public ResponseEntity<ResultVO> userList() {
         List<User> userList = userService.listUsers();
+        System.out.println("jieguojie:" + JSON.toJSON(userList));
         return ResponseEntity.ok().body(new ResultVO(StatusCodeEnum.SUCCESS_CODE.getCode(), StatusCodeEnum.SUCCESS_CODE.getMessage(), userList));
     }
 
-    @GetMapping("/user/{id}")
+    @RequestMapping("/user/{id}")
     @ResponseBody
     public ResponseEntity<ResultVO> userList(@PathVariable("id") Integer id) {
         User user = userService.getUserById(id);

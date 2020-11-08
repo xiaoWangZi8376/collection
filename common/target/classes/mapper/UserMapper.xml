@@ -6,11 +6,13 @@
         <result column="nickname" jdbcType="VARCHAR" property="nickname" />
         <result column="password" jdbcType="VARCHAR" property="password" />
         <result column="status" jdbcType="VARCHAR" property="status" />
-        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="admin" jdbcType="VARCHAR" property="admin" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+<!--        <result column="username" jdbcType="VARCHAR" property="username" />-->
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, nickname, password, status, username
+    id, nickname, password, status
   </sql>
 
 
@@ -18,19 +20,19 @@
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from user
+        from sys_user
         where id = #{id,jdbcType=INTEGER}
     </select>
 
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from user
+    delete from sys_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
 
     <insert id="insert" parameterType="com.lin.common.entity.User">
-    insert into user (id, nickname, password,
+    insert into sys_user (id, nickname, password,
       status, username)
     values (#{id,jdbcType=INTEGER}, #{nickname,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR},
       #{status,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR})
@@ -38,7 +40,7 @@
 
 
     <insert id="insertSelective" parameterType="com.lin.common.entity.User">
-        insert into user
+        insert into sys_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -78,7 +80,7 @@
 
 
     <update id="updateByPrimaryKeySelective" parameterType="com.lin.common.entity.User">
-        update user
+        update sys_user
         <set>
             <if test="nickname != null">
                 nickname = #{nickname,jdbcType=VARCHAR},
@@ -98,7 +100,7 @@
 
 
     <update id="updateByPrimaryKey" parameterType="com.lin.common.entity.User">
-    update user
+    update sys_user
     set nickname = #{nickname,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       status = #{status,jdbcType=VARCHAR},
@@ -111,7 +113,7 @@
     <select id="selectAllUser"  resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from user
+        from sys_user
     </select>
 
 
@@ -119,7 +121,7 @@
     <select id="selectByUsername"  parameterType="string" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
-        from user
+        from sys_user
         WHERE username = #{username}
     </select>
 
