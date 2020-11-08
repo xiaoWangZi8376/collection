@@ -1,9 +1,8 @@
-package com.lin.common.entity;
-
+package com.lin.common.dto;
 
 import java.util.Date;
 
-public class User {
+public class SysUser {
     private Long id;
 
     private String account;
