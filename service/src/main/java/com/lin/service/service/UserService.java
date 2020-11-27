@@ -1,6 +1,7 @@
 package com.lin.service.service;
 
 
+import com.lin.common.dto.SysUser;
 import com.lin.common.entity.User;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface UserService {
      * @param id
      * @return
      */
-    User getUserById(Integer id);
+    SysUser getUserById(String id);
 
     /**
      * 根据用户名获得用户信息

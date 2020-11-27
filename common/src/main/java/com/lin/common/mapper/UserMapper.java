@@ -1,5 +1,6 @@
 package com.lin.common.mapper;
 
+import com.lin.common.dto.SysUser;
 import com.lin.common.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,21 +12,15 @@ import java.util.List;
 @Component("userMapper")
 public interface UserMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
-    @Deprecated
-    int insert(User record);
+    int insert(SysUser record);
 
-    int insertSelective(User record);
+    int insertSelective(SysUser record);
 
-    User selectByPrimaryKey(Integer id);
+    SysUser selectByPrimaryKey(String id);
 
-    int updateByPrimaryKeySelective(User record);
+    int updateByPrimaryKeySelective(SysUser record);
 
-    @Deprecated
-    int updateByPrimaryKey(User record);
-
-    List<User> selectAllUser();
-
-    User selectByUsername(@Param("username") String username);
+    int updateByPrimaryKey(SysUser record);
 }

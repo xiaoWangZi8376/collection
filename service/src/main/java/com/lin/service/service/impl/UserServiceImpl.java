@@ -1,6 +1,7 @@
 package com.lin.service.service.impl;
 
 
+import com.lin.common.dto.SysUser;
 import com.lin.common.entity.User;
 import com.lin.common.mapper.UserMapper;
 import com.lin.service.service.UserService;
@@ -12,43 +13,39 @@ import javax.annotation.Resource;
 import java.util.List;
 
 
-@Service
+@Service("userServiceImpl")
 public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
 
-
     @Override
-    public User getUserById(Integer id) {
+    public SysUser getUserById(String id) {
         return userMapper.selectByPrimaryKey(id);
     }
 
     @Override
     public User getUserByUsername(String username) {
-        return userMapper.selectByUsername(username);
+        return null;
     }
 
     @Override
     public List<User> listUsers() {
-        return userMapper.selectAllUser();
+        return null;
     }
 
-    @Transactional
     @Override
     public void deleteUserById(Integer id) {
-        userMapper.deleteByPrimaryKey(id);
+
     }
 
-    @Transactional
     @Override
     public void updateUser(User user) {
-        userMapper.updateByPrimaryKeySelective(user);
+
     }
 
-    @Transactional
     @Override
     public void insertUser(User user) {
-        userMapper.insertSelective(user);
+
     }
 }
