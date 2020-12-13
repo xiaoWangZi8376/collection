@@ -11,7 +11,7 @@
 
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/demo?tinyInt1isBit=false" userId="root"
+                        connectionURL="jdbc:mysql://localhost:3306/prd?tinyInt1isBit=false" userId="root"
                         password="root">
         </jdbcConnection>
 
@@ -28,20 +28,20 @@
         </javaModelGenerator>
 
         <!-- mapper.xml位置-->
-        <sqlMapGenerator targetPackage="mapper"
-                         targetProject="common/src/main/resources">
+        <sqlMapGenerator targetPackage="prd"
+                         targetProject="common/src/main/resources/mapper">
             <property name="enableSubPackages" value="false"/>
         </sqlMapGenerator>
 
         <!-- mapper 接口位置-->
         <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="com.lin.common.mapper"
+                             targetPackage="com.lin.common.dao.prdDao"
                              targetProject="common/src/main/java">
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
         <!-- 指定数据库表，要生成哪些表，就写哪些表，要和数据库中对应，不能写错！ -->
-        <table tableName="sys_user"
+        <table tableName="prd_user"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false"

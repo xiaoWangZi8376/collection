@@ -7,9 +7,7 @@ import com.github.pagehelper.PageInterceptor;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -19,8 +17,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.TransactionManagementConfigurer;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -30,42 +27,42 @@ import java.util.Properties;
 
 @Configuration
 //扫描 Mapper 接口并容器管理
-@MapperScan(basePackages = DatasourceConfig.PACKAGE, sqlSessionFactoryRef = "sqlSessionFactory")
-public class DatasourceConfig {
-//mplements TransactionManagementConfigurer
-
+@EnableTransactionManagement
+@MapperScan(basePackages = DevDatasourceConfig.PACKAGE, sqlSessionFactoryRef = "devSqlSessionFactory")
+public class DevDatasourceConfig {
+// implements TransactionManagementConfigurer
 
     // 精确到 master 目录，以便跟其他数据源隔离
-    static final String PACKAGE = "com.lin.common.config.DatasourceConfig.datasource1";
-    static final String MAPPER_LOCATION = "classpath:mapper/*.xml";
+    static final String PACKAGE = "com.lin.common.dao.devDao";
+    static final String MAPPER_LOCATION = "classpath:mapper/dev/*.xml";
 
 
+    @Bean
+    // 主数据源需要指定
     @Primary
-    @Bean(name = "datasource1")
     // 读配置文件
-    @ConfigurationProperties(prefix = "spring.datasource.mysql")
-    public DataSource dataSource1() {
+    @ConfigurationProperties(prefix = "spring.datasource.mysql2")
+    public DataSource devDataSource() {
         //jdbc配置
         DruidDataSource dataSource = new DruidDataSource();
         return dataSource;
     }
 
-    @Bean(name = "transactionManager")
+
+    @Bean
     @Primary
     public DataSourceTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource1());
+        return new DataSourceTransactionManager(devDataSource());
     }
 
-    @Bean(name = "sqlSessionFactory")
+    @Bean
     @Primary
-    public SqlSessionFactory ds1SqlSessionFactory() {
+    public SqlSessionFactory devSqlSessionFactory() {
         try {
             final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-            sessionFactory.setDataSource(dataSource1());
-            sessionFactory.setTypeAliasesPackage("cn.edu.nuc.Test1.entity");
-            sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver()
-                    .getResources(DatasourceConfig.MAPPER_LOCATION));
-
+            sessionFactory.setDataSource(devDataSource());
+//            sessionFactory.setTypeAliasesPackage("com.lin.common.dto");
+//            sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(DatasourceConfig.MAPPER_LOCATION));
             //添加PageHelper插件
             Interceptor interceptor = new PageInterceptor();
             Properties properties = new Properties();
@@ -77,12 +74,14 @@ public class DatasourceConfig {
             properties.setProperty("rowBoundsWithCount", "true");
             //是否分页合理化
             properties.setProperty("reasonable", "false");
+            //
+            interceptor.setProperties(properties);
             //添加插件
             sessionFactory.setPlugins(new Interceptor[]{interceptor});
 
             //添加mapper操作数据库XML目录
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            sessionFactory.setMapperLocations(resolver.getResources("classpath:mapper/*.xml"));
+            sessionFactory.setMapperLocations(resolver.getResources(MAPPER_LOCATION));
             return sessionFactory.getObject();
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,20 +90,28 @@ public class DatasourceConfig {
 
     }
 
-    /*spring通过SqlSessionTemplate对象去操作sqlsession语句*/
+
+    /*spring通过SqlSessionTemplate对象去操作sqlsession语句
     @Bean
     public SqlSessionTemplate sqlSessionTemplate() {
-        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(ds1SqlSessionFactory());
+        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory1());
         return sqlSessionTemplate;
     }
+       */
+    //配置事务管理器
+    /**
+     * Transaction 相关配置
+     * 因为有两个数据源，所有使用ChainedTransactionManager把两个DataSourceTransactionManager包括在一起。
 
-    /*配置事务管理器
-    @Bean
-    @Override
-    public PlatformTransactionManager annotationDrivenTransactionManager() {
-        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager(dataSource1());
-        return dataSourceTransactionManager;
-    }*/
+     @Override public PlatformTransactionManager annotationDrivenTransactionManager() {
+     DataSourceTransactionManager dtm1 = new DataSourceTransactionManager(dataSource1());
+     DataSourceTransactionManager dtm2 = new DataSourceTransactionManager(dataSource2());
+
+     ChainedTransactionManager ctm = new ChainedTransactionManager(dtm1, dtm2);
+     return ctm;
+     }
+     */
+
 
     /**
      * 上面的配置我们主要通过mybatis的SqlSessionFactoryBean来获取SqlsessionFactory工厂类，
