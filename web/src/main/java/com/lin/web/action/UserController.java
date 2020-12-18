@@ -5,8 +5,6 @@ import com.lin.common.dto.SysUser;
 import com.lin.common.dto.User;
 import com.lin.common.vo.ResultVO;
 import com.lin.service.service.PrdUserService;
-import com.lin.service.service.UserService;
-import com.lin.service.service.impl.PrdUserServiceImpl;
 import com.lin.service.service.impl.SysUserServiceImpl;
 import com.lin.service.service.impl.UserServiceImpl;
 import com.lin.web.enums.StatusCodeEnum;
@@ -28,7 +26,7 @@ public class UserController {
     private UserServiceImpl userService;
 
     @Autowired
-    private PrdUserServiceImpl PrdUserService;
+    private PrdUserService prdUserService;
 
 
     @RequestMapping("/sysUserList")
@@ -52,10 +50,19 @@ public class UserController {
     @RequestMapping("/prdUserList")
     @ResponseBody
     public ResponseEntity<ResultVO> prdUserList(@PathVariable("id") String id) {
-        PrdUser user = PrdUserService.selectByPrimaryKey(Integer.valueOf(id));
+        PrdUser user = prdUserService.selectByPrimaryKey(Integer.valueOf(id));
         return ResponseEntity.ok().body(
                 new ResultVO(StatusCodeEnum.SUCCESS_CODE.getCode(),
                         StatusCodeEnum.SUCCESS_CODE.getMessage(), user));
+    }
+
+    @RequestMapping("/insertPrdUserList")
+    @ResponseBody
+    public int insertPrdUserList(@PathVariable("id") String id) {
+        PrdUser user = prdUserService.selectByPrimaryKey(Integer.valueOf(id));
+        user.setName("天津市2");
+        int insert = prdUserService.insert(user);
+        return insert;
     }
 
 

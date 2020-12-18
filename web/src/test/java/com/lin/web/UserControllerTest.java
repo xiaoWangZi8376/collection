@@ -37,10 +37,17 @@ public class UserControllerTest {
         ResponseEntity<ResultVO> resultVOResponseEntity = userController.devUserList("1");
         System.out.println("resultVOResponseEntity:" + JSON.toJSONString(resultVOResponseEntity));
     }
+
     @Test
     public void prdUserList() {
         ResponseEntity<ResultVO> resultVOResponseEntity = userController.prdUserList("1");
         System.out.println("resultVOResponseEntity:" + JSON.toJSONString(resultVOResponseEntity));
     }
 
+
+    @Test
+    public void insertPrdUserList() {
+        int i = userController.insertPrdUserList("1");
+        System.out.println("插入成功：" + i);
+    }
 }

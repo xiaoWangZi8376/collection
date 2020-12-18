@@ -7,7 +7,9 @@ import com.github.pagehelper.PageInterceptor;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -16,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -46,9 +49,15 @@ public class PrdDatasourceConfig {
     }
 
 
-    @Bean
-    public DataSourceTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(prdDataSource());
+//    @Bean
+//    public DataSourceTransactionManager transactionManager() {
+//        return new DataSourceTransactionManager(prdDataSource());
+//    }
+
+    @Bean(name = "prdTransactionManager")
+    public PlatformTransactionManager transactionManager(@Qualifier("prdDataSource") DataSource prdDataSource)
+    {
+        return new DataSourceTransactionManager(prdDataSource);
     }
 
     @Bean
@@ -77,6 +86,7 @@ public class PrdDatasourceConfig {
             //添加mapper操作数据库XML目录
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
             sessionFactory.setMapperLocations(resolver.getResources(MAPPER_LOCATION));
+//            sessionFactory.getObject().openSession(false);
             return sessionFactory.getObject();
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,13 +96,14 @@ public class PrdDatasourceConfig {
     }
 
 
-    /*spring通过SqlSessionTemplate对象去操作sqlsession语句
-    @Bean
-    public SqlSessionTemplate sqlSessionTemplate() {
-        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(sqlSessionFactory1());
-        return sqlSessionTemplate;
-    }
-       */
+    //spring通过SqlSessionTemplate对象去操作sqlsession语句
+//    @Bean
+//    public SqlSessionTemplate sqlSessionTemplate() {
+//        SqlSessionTemplate sqlSessionTemplate = new SqlSessionTemplate(prdSqlSessionFactory());
+//        sqlSessionTemplate.commit(true);
+//        return sqlSessionTemplate;
+//    }
+
     //配置事务管理器
     /**
      * Transaction 相关配置

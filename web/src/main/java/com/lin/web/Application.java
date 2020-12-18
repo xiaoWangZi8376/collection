@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         HibernateJpaAutoConfiguration.class})
 @ComponentScan(basePackages = {"com.lin.*"}) //指定扫描包路径
 @MapperScan(basePackages = {"com.lin.common"})
-@EnableTransactionManagement //开启事务管理
+//@EnableTransactionManagement //开启事务管理
 public class Application {
 
     public static void main(String[] args) {
