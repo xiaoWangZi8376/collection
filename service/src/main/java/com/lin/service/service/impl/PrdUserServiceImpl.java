@@ -13,7 +13,7 @@ public class PrdUserServiceImpl implements PrdUserService {
     private PrdUserMapper prdUserMapper;
 
     @Override
-    public int deleteByPrimaryKey(Integer id) {
+    public int deleteByPrimaryKey(String id) {
         return prdUserMapper.deleteByPrimaryKey(id);
     }
 
@@ -31,7 +31,7 @@ public class PrdUserServiceImpl implements PrdUserService {
     }
 
     @Override
-    public PrdUser selectByPrimaryKey(Integer id) {
+    public PrdUser selectByPrimaryKey(String id) {
         return prdUserMapper.selectByPrimaryKey(id);
     }
 

@@ -7,13 +7,13 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Mapper
 public interface PrdUserMapper {
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(String id);
 
     int insert(PrdUser record);
 
     int insertSelective(PrdUser record);
 
-    PrdUser selectByPrimaryKey(Integer id);
+    PrdUser selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(PrdUser record);
 
