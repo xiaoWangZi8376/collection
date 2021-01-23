@@ -6,8 +6,8 @@ import com.lin.common.dto.User;
 import com.lin.common.util.SnowflakeId;
 import com.lin.common.vo.ResultVO;
 import com.lin.service.service.PrdUserService;
-import com.lin.service.service.impl.SysUserServiceImpl;
-import com.lin.service.service.impl.UserServiceImpl;
+import com.lin.service.service.SysUserService;
+import com.lin.service.service.UserService;
 import com.lin.web.enums.StatusCodeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private SysUserServiceImpl sysUserService;
+    private SysUserService sysUserService;
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     private PrdUserService prdUserService;
@@ -62,7 +62,7 @@ public class UserController {
     public int insertPrdUserList(@PathVariable("id") String id) {
         PrdUser user = prdUserService.selectByPrimaryKey(id);
         user.setId(SnowflakeId.getId());
-        user.setName("天津市2");
+        user.setName("天津市3");
         int insert = prdUserService.insert(user);
         return insert;
     }

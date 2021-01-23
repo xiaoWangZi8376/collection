@@ -1,4 +1,8 @@
 package com.lin;
 
-public class QuartzApp {
+public class GatewayApp {
+
+    public static void main(String[] args) {
+
+    }
 }

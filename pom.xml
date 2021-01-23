@@ -13,6 +13,9 @@
         <module>service</module>
         <module>web</module>
         <module>db</module>
+        <module>quartz</module>
+        <module>gateway</module>
+        <module>config</module>
     </modules>
 
     <name>collection</name>
@@ -41,10 +44,23 @@
         <redis.version>2.7.1</redis.version>
         <commons.version>3.3.2</commons.version>
         <data.commons.version>1.8.2.RELEASE</data.commons.version>
+        <quartz.version>2.2.1</quartz.version>
     </properties>
 
 
     <dependencies>
+
+        <!--lokback 配置 stater-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-logging</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>commons-logging</groupId>-->
+<!--            <artifactId>commons-logging</artifactId>-->
+<!--            <version>1.1.1</version>-->
+<!--        </dependency>-->
+        <!--lokback 配置 end-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -67,6 +83,18 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz-jobs</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>redis.clients</groupId>

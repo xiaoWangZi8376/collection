@@ -1,4 +1,4 @@
-package com.lin.service.service.impl;
+package com.lin.service.impl;
 
 import com.lin.common.dao.prdDao.PrdUserMapper;
 import com.lin.common.dto.PrdUser;
