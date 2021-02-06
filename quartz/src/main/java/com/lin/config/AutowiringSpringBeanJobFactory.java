@@ -1,8 +1,11 @@
 package com.lin.config;
 
 import org.quartz.spi.TriggerFiredBundle;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.scheduling.quartz.AdaptableJobFactory;
 import org.springframework.stereotype.Component;
 
@@ -14,15 +17,23 @@ import org.springframework.stereotype.Component;
  * 如何纳入：Job的创建都是通过JobFactory创建的。官网解释为证：
  */
 @Component
-public class JobFactory extends AdaptableJobFactory {
+public class AutowiringSpringBeanJobFactory extends AdaptableJobFactory implements ApplicationContextAware {
 
         //AutowireCapableBeanFactory 可以将一个对象添加到SpringIOC容器中，并且完成该对象注入
-        @Autowired
         private AutowireCapableBeanFactory autowireCapableBeanFactory;
 
-        /**
-         * 该方法需要将实例化的任务对象手动的添加到springIOC容器中并且完成对象的注入
-         */
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.autowireCapableBeanFactory = applicationContext.getAutowireCapableBeanFactory();
+    }
+
+    /**
+     *  将job实例交给spring ioc托管
+     * 我们在job实例实现类内可以直接使用spring注入的调用被spring ioc管理的实例
+     * @param bundle
+     * @return
+     * @throws Exception
+     */
         @Override
         protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
             Object obj = super.createJobInstance(bundle);
