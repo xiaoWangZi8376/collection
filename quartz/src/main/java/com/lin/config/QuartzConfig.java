@@ -1,10 +1,13 @@
 package com.lin.config;
 
 import com.lin.action.HelloWorldJob;
-import org.quartz.Scheduler;
+import com.lin.cants.Cants;
+import com.lin.cants.Dictionary;
+import com.lin.task.DefaultJobs;
 import org.quartz.ee.servlet.QuartzInitializerListener;
 import org.quartz.spi.JobFactory;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -13,6 +16,8 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 @Configuration
@@ -24,16 +29,16 @@ public class QuartzConfig {
      * @return
      */
     @Bean
-    public JobFactory jobFactory() {
-        /**
-         * 采用自定义任务工厂 整合spring实例来完成构建任务*/
+    public JobFactory jobFactory(ApplicationContext applicationContext) {
         AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+        jobFactory.setApplicationContext(applicationContext);
         return jobFactory;
     }
 
     /**
      * 读取quartz.properties 文件
      * 将值初始化
+     *
      * @return
      */
     @Bean
@@ -46,17 +51,82 @@ public class QuartzConfig {
 
     /**
      * 初始化监听器
+     *
      * @return
      */
     @Bean
-    public QuartzInitializerListener executorListener(){
+    public QuartzInitializerListener executorListener() {
         return new QuartzInitializerListener();
+    }
+
+
+    // 创建默认Job对象
+
+    public JobDetailFactoryBean defaultJobDetailFactoryBean() {
+        JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
+        Map<String, Object> jobDataAsMap = new HashMap<>();
+        jobDataAsMap.put(Dictionary.methodName, Cants.methodName.getDesc());
+        jobDetailFactory.setJobDataAsMap(jobDataAsMap);
+        jobDetailFactory.setGroup(Dictionary.groupName);
+        jobDetailFactory.setJobClass(DefaultJobs.class);
+        return jobDetailFactory;
+    }
+
+
+    // 创建默认的trigger
+
+    public CronTriggerFactoryBean buildTriggerFactoryBean(JobDetailFactoryBean JobDetailBean) {
+        CronTriggerFactoryBean cronTriggerFactory = new CronTriggerFactoryBean();
+        cronTriggerFactory.setJobDetail(JobDetailBean.getObject());
+        //这里涉及到Cron表达式 可以去看我写的Cron表达式详解博客！！！ 此处代表每1秒钟 调用一次
+        return cronTriggerFactory;
+    }
+
+
+    // 1.创建AsynGo对象
+    @Bean
+    public JobDetailFactoryBean AsynGoJobDetailFactoryBean() {
+        JobDetailFactoryBean AsynGojobDetailFactoryBean = defaultJobDetailFactoryBean();
+        Map<String, String> beabId = new HashMap<>();
+        beabId.put(Dictionary.beanName, Cants.beanName_2.getDesc());
+        AsynGojobDetailFactoryBean.setJobDataAsMap(beabId);
+        //关联我们自己的Job类
+        return AsynGojobDetailFactoryBean;
+    }
+
+    // 2.创建AsynGoTrigger对象
+    @Bean
+    public CronTriggerFactoryBean AsynGoCronTriggerFactoryBean() {
+        CronTriggerFactoryBean AsynGoTriggerFactoryBean = buildTriggerFactoryBean(AsynGoJobDetailFactoryBean());
+        //这里涉及到Cron表达式 可以去看我写的Cron表达式详解博客！！！ 此处代表每1秒钟 调用一次
+        AsynGoTriggerFactoryBean.setCronExpression("0/20 * * * * ?");
+        return AsynGoTriggerFactoryBean;
+    }
+
+    // 1.创建AsynSay对象
+    @Bean
+    public JobDetailFactoryBean AsynSayJobDetailFactoryBean() {
+        Map<String, String> beabId = new HashMap<>();
+        beabId.put(Dictionary.beanName, Cants.beanName_1.getDesc());
+        JobDetailFactoryBean AsynSayjobDetailFactoryBean = defaultJobDetailFactoryBean();
+        AsynSayjobDetailFactoryBean.setJobDataAsMap(beabId);
+        //关联我们自己的Job类
+        return AsynSayjobDetailFactoryBean;
+    }
+
+    // 2.创建AsynGoTrigger对象
+    @Bean
+    public CronTriggerFactoryBean AsynSayCronTriggerFactoryBean() {
+        CronTriggerFactoryBean AsynSayTriggerFactoryBean = buildTriggerFactoryBean(AsynSayJobDetailFactoryBean());
+        //这里涉及到Cron表达式 可以去看我写的Cron表达式详解博客！！！ 此处代表每1秒钟 调用一次
+        AsynSayTriggerFactoryBean.setCronExpression("0/7 * * * * ?");
+        return AsynSayTriggerFactoryBean;
     }
 
 
     // 1.创建Job对象
     @Bean
-    public JobDetailFactoryBean jobDetailFactoryBean() {
+    public JobDetailFactoryBean HelloWorldJobDetailFactoryBean() {
         JobDetailFactoryBean jobDetailFactory = new JobDetailFactoryBean();
         //关联我们自己的Job类
         jobDetailFactory.setJobClass(HelloWorldJob.class);
@@ -67,48 +137,30 @@ public class QuartzConfig {
     // Cron Trigger
 
     @Bean
-    public CronTriggerFactoryBean cronTriggerFactoryBean() {
+    public CronTriggerFactoryBean HelloWorldCronTriggerFactoryBean() {
         CronTriggerFactoryBean cronTriggerFactory = new CronTriggerFactoryBean();
-        cronTriggerFactory.setJobDetail(jobDetailFactoryBean().getObject());
+        cronTriggerFactory.setJobDetail(HelloWorldJobDetailFactoryBean().getObject());
         //这里涉及到Cron表达式 可以去看我写的Cron表达式详解博客！！！ 此处代表每1秒钟 调用一次
         cronTriggerFactory.setCronExpression("0/1 * * * * ?");
         return cronTriggerFactory;
     }
 
-    // 3.创建Scheduler对象
+    // 统计一的创建SchedulerFactory对象
     @Bean
-    public SchedulerFactoryBean schedulerFactoryBean() throws IOException {
+    public SchedulerFactoryBean schedulerFactoryBean(JobFactory jobFactory,ApplicationContext context) throws IOException {
         SchedulerFactoryBean schedulerFactory = new SchedulerFactoryBean();
-        //关联trigger
-        schedulerFactory.setTriggers(cronTriggerFactoryBean().getObject());
-        schedulerFactory.setJobFactory(jobFactory());
+        schedulerFactory.setJobFactory(jobFactory);
         // 将配置文件的数据加载到SchedulerFactoryBean中
         // schedulerFactory.setQuartzProperties(quartzProperties());
+        //关联trigger
+        schedulerFactory.setTriggers(
+                HelloWorldCronTriggerFactoryBean().getObject(),
+                AsynGoCronTriggerFactoryBean().getObject(),
+                AsynSayCronTriggerFactoryBean().getObject());
+        schedulerFactory.setApplicationContextSchedulerContextKey(Dictionary.quartzApplicationContext);
+        schedulerFactory.setStartupDelay(1);
+        schedulerFactory.setApplicationContext(context);
         return schedulerFactory;
     }
-
-
-    /**
-     * 这其中我们把2个类的初始化移到了IOC中，因为之前Quartz的实例化是自己去控制的，为什么要这么做后面会有讲到。
-     * 一个是SchedulerFactoryBean类，这个类其实就是之前xml配置中的SchedulerFactoryBean。
-     *
-     * schedulerFactoryBean是Quartz入口。同时也是spring 和Scheduler 关系的桥梁。以便在Spring容器启动后，Scheduler自动开始工作，
-     * 而在Spring容器关闭前，自动关闭
-     */
-
-
-//    @Bean
-//    public SchedulerFactoryBean schedulerFactoryBean() {
-//        SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
-//        schedulerFactoryBean.setJobFactory(jobFactory);
-//        // 用于quartz集群,QuartzScheduler 启动时更新己存在的Job
-//        schedulerFactoryBean.setOverwriteExistingJobs(true);
-//        //延长启动
-//        schedulerFactoryBean.setStartupDelay(1);
-//        //设置加载的配置文件
-//        schedulerFactoryBean.setConfigLocation(new ClassPathResource("/quartz.properties"));
-//        return schedulerFactoryBean;
-//    }
-
 
 }

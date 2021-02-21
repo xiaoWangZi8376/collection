@@ -10,6 +10,7 @@
         <module name="web" />
         <module name="gateway" />
         <module name="common" />
+        <module name="designPatterns" />
         <module name="service" />
         <module name="db" />
         <module name="config" />

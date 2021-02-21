@@ -46,21 +46,24 @@
         <commons.version>3.3.2</commons.version>
         <data.commons.version>1.8.2.RELEASE</data.commons.version>
         <quartz.version>2.2.1</quartz.version>
+        <gateway.version>3.0.1</gateway.version>
+        <hystrix.version>2.2.6.RELEASE</hystrix.version>
+        <webflux.version>3.0.1.RELEASE</webflux.version>
     </properties>
 
 
     <dependencies>
 
         <!--lokback 配置 stater-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-logging</artifactId>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>commons-logging</groupId>-->
-<!--            <artifactId>commons-logging</artifactId>-->
-<!--            <version>1.1.1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-logging</artifactId>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>commons-logging</groupId>-->
+        <!--            <artifactId>commons-logging</artifactId>-->
+        <!--            <version>1.1.1</version>-->
+        <!--        </dependency>-->
         <!--lokback 配置 end-->
 
         <dependency>
@@ -84,7 +87,29 @@
 
     <dependencyManagement>
         <dependencies>
+            <!--
 
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
+                <version>${gateway.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+                <version>${hystrix.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-function-webflux</artifactId>
+                <version>${webflux.version}</version>
+            </dependency>
+
+            -->
+
+            <!--quartz -->
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
@@ -96,7 +121,7 @@
                 <artifactId>quartz-jobs</artifactId>
                 <version>${quartz.version}</version>
             </dependency>
-
+            <!--redis -->
             <dependency>
                 <groupId>redis.clients</groupId>
                 <artifactId>jedis</artifactId>

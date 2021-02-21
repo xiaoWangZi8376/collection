@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
  * 解决方案：将Job Bean也纳入到Spring容器的管理之中，Spring容器自然能够为Job Bean自动装配好所需的依赖。
  * 如何纳入：Job的创建都是通过JobFactory创建的。官网解释为证：
  */
-@Component
 public class AutowiringSpringBeanJobFactory extends AdaptableJobFactory implements ApplicationContextAware {
 
         //AutowireCapableBeanFactory 可以将一个对象添加到SpringIOC容器中，并且完成该对象注入
