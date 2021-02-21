@@ -83,44 +83,40 @@ public class QuartzConfig {
     }
 
 
-    // 1.创建AsynGo对象
+    // 1.创建AsynSend对象
     @Bean
-    public JobDetailFactoryBean AsynGoJobDetailFactoryBean() {
-        JobDetailFactoryBean AsynGojobDetailFactoryBean = defaultJobDetailFactoryBean();
-        Map<String, String> beabId = new HashMap<>();
-        beabId.put(Dictionary.beanName, Cants.beanName_2.getDesc());
-        AsynGojobDetailFactoryBean.setJobDataAsMap(beabId);
+    public JobDetailFactoryBean AsynSendJobDetail() {
+        JobDetailFactoryBean jobDetailFactoryBean = defaultJobDetailFactoryBean();
+        jobDetailFactoryBean.getJobDataMap().put(Dictionary.beanName, Cants.beanName_2.getDesc());
         //关联我们自己的Job类
-        return AsynGojobDetailFactoryBean;
+        return jobDetailFactoryBean;
     }
 
-    // 2.创建AsynGoTrigger对象
+    // 2.创建AsynSendTrigger对象
     @Bean
-    public CronTriggerFactoryBean AsynGoCronTriggerFactoryBean() {
-        CronTriggerFactoryBean AsynGoTriggerFactoryBean = buildTriggerFactoryBean(AsynGoJobDetailFactoryBean());
+    public CronTriggerFactoryBean AsynSendTrigger() {
+        CronTriggerFactoryBean AsynGoTriggerFactoryBean = buildTriggerFactoryBean(AsynSendJobDetail());
         //这里涉及到Cron表达式 可以去看我写的Cron表达式详解博客！！！ 此处代表每1秒钟 调用一次
         AsynGoTriggerFactoryBean.setCronExpression("0/20 * * * * ?");
         return AsynGoTriggerFactoryBean;
     }
 
-    // 1.创建AsynSay对象
+    // 1.创建AsynAccept对象
     @Bean
-    public JobDetailFactoryBean AsynSayJobDetailFactoryBean() {
-        Map<String, String> beabId = new HashMap<>();
-        beabId.put(Dictionary.beanName, Cants.beanName_1.getDesc());
-        JobDetailFactoryBean AsynSayjobDetailFactoryBean = defaultJobDetailFactoryBean();
-        AsynSayjobDetailFactoryBean.setJobDataAsMap(beabId);
+    public JobDetailFactoryBean AsynAcceptJobDetail() {
+        JobDetailFactoryBean jobDetailFactoryBean = defaultJobDetailFactoryBean();
+        jobDetailFactoryBean.getJobDataMap().put(Dictionary.beanName, Cants.beanName_1.getDesc());
         //关联我们自己的Job类
-        return AsynSayjobDetailFactoryBean;
+        return jobDetailFactoryBean;
     }
 
-    // 2.创建AsynGoTrigger对象
+    // 2.创建AsynAcceptTrigger对象
     @Bean
-    public CronTriggerFactoryBean AsynSayCronTriggerFactoryBean() {
-        CronTriggerFactoryBean AsynSayTriggerFactoryBean = buildTriggerFactoryBean(AsynSayJobDetailFactoryBean());
+    public CronTriggerFactoryBean AsynAcceptTrigger() {
+        CronTriggerFactoryBean cronTriggerFactoryBean = buildTriggerFactoryBean(AsynAcceptJobDetail());
         //这里涉及到Cron表达式 可以去看我写的Cron表达式详解博客！！！ 此处代表每1秒钟 调用一次
-        AsynSayTriggerFactoryBean.setCronExpression("0/7 * * * * ?");
-        return AsynSayTriggerFactoryBean;
+        cronTriggerFactoryBean.setCronExpression("0/7 * * * * ?");
+        return cronTriggerFactoryBean;
     }
 
 
@@ -141,7 +137,7 @@ public class QuartzConfig {
         CronTriggerFactoryBean cronTriggerFactory = new CronTriggerFactoryBean();
         cronTriggerFactory.setJobDetail(HelloWorldJobDetailFactoryBean().getObject());
         //这里涉及到Cron表达式 可以去看我写的Cron表达式详解博客！！！ 此处代表每1秒钟 调用一次
-        cronTriggerFactory.setCronExpression("0/1 * * * * ?");
+        cronTriggerFactory.setCronExpression("0/5 * * * * ?");
         return cronTriggerFactory;
     }
 
@@ -155,8 +151,8 @@ public class QuartzConfig {
         //关联trigger
         schedulerFactory.setTriggers(
                 HelloWorldCronTriggerFactoryBean().getObject(),
-                AsynGoCronTriggerFactoryBean().getObject(),
-                AsynSayCronTriggerFactoryBean().getObject());
+                AsynSendTrigger().getObject(),
+                AsynAcceptTrigger().getObject());
         schedulerFactory.setApplicationContextSchedulerContextKey(Dictionary.quartzApplicationContext);
         schedulerFactory.setStartupDelay(1);
         schedulerFactory.setApplicationContext(context);
